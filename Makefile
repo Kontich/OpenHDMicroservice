@@ -1,136 +1,126 @@
-
-MAVLINK_DIR = $(PWD)/lib/Mavlink/out 
-SRC_DIR = $(PWD)/src
-INC_DIR = -I$(PWD)/inc -I$(PWD)/lib/RTIMULib2/RTIMULib -I$(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers
+MAVLINK_DIR = $(CURDIR)/lib/Mavlink/out
+SRC_DIR = $(CURDIR)/src
+INC_DIR = -I$(CURDIR)/inc -I$(CURDIR)/lib/RTIMULib2/RTIMULib -I$(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers
 
 ifeq ($(PREFIX),)
-	PREFIX := /usr/local
+    PREFIX := /usr/local
 endif
 
 ifdef $(DESTDIR)
-	$(DESTDIR) := $(DESTDIR)/
+    $(DESTDIR) := $(DESTDIR)/
 endif
 
-SYSTEM_INCLUDE = $(PREFIX)/include
+SYSTEM_INCLUDE = -I$(PREFIX)/include -I/usr/local/include
+LOCAL_INCLUDE = $(CURDIR)/lib/include
 LDFLAGS = -L$(PREFIX)/lib -llifepo4wered -lboost_filesystem -lboost_regex -lboost_system -lboost_program_options -lstdc++fs
 
-
-openhd_microservice: RTFusion.o RTFusionRTQF.o RTMath.o RTFusionKalman4.o RTIMUAccelCal.o RTIMUHal.o RTIMUMagCal.o RTIMUSettings.o RTIMU.o RTIMUGD20M303DLHC.o RTIMUGD20HM303DLHC.o RTIMUGD20HM303D.o RTIMULSM9DS0.o RTIMULSM9DS1.o RTIMUMPU9150.o RTIMUMPU9250.o RTIMUBMX055.o RTIMUBNO055.o RTIMUNull.o RTPressure.o RTPressureBMP180.o RTPressureLPS25H.o RTPressureMS5611.o RTPressureMS5637.o RTHumidity.o RTHumidityHTS221.o RTHumidityHTU21D.o RTIMUHMC5883LADXL345.o bcm2835.o ina2xx.o microservice.o gpio.o camera.o power.o status.o sensor.o main.o 
-	g++ -g -pthread -o openhd_microservice RTFusion.o RTFusionRTQF.o RTMath.o RTFusionKalman4.o RTIMUAccelCal.o RTIMUHal.o RTIMUMagCal.o RTIMUSettings.o RTIMU.o RTIMUGD20M303DLHC.o RTIMUGD20HM303DLHC.o RTIMUGD20HM303D.o RTIMULSM9DS0.o RTIMULSM9DS1.o RTIMUMPU9150.o RTIMUMPU9250.o RTIMUBMX055.o RTIMUBNO055.o RTIMUNull.o RTPressure.o RTPressureBMP180.o RTPressureLPS25H.o RTPressureMS5611.o RTPressureMS5637.o RTHumidity.o RTHumidityHTS221.o RTHumidityHTU21D.o RTIMUHMC5883LADXL345.o bcm2835.o ina2xx.o microservice.o gpio.o camera.o power.o status.o sensor.o main.o $(LDFLAGS)
+openhd_microservice: RTFusion.o RTFusionRTQF.o RTMath.o RTFusionKalman4.o RTIMUAccelCal.o RTIMUHal.o RTIMUMagCal.o RTIMUSettings.o RTIMU.o RTIMUGD20M303DLHC.o RTIMUGD20HM303DLHC.o RTIMUGD20HM303D.o RTIMULSM9DS0.o RTIMULSM9DS1.o RTIMUMPU9150.o RTIMUMPU9250.o RTIMUBMX055.o RTIMUBNO055.o RTIMUNull.o RTPressure.o RTPressureBMP180.o RTPressureLPS25H.o RTPressureMS5611.o RTPressureMS5637.o RTHumidity.o RTHumidityHTS221.o RTHumidityHTU21D.o RTIMUHMC5883LADXL345.o bcm2835.o ina2xx.o gpio.o power.o status.o sensor.o main.o
+	g++ -g -pthread -o openhd_microservice RTFusion.o RTFusionRTQF.o RTMath.o RTFusionKalman4.o RTIMUAccelCal.o RTIMUHal.o RTIMUMagCal.o RTIMUSettings.o RTIMU.o RTIMUGD20M303DLHC.o RTIMUGD20HM303DLHC.o RTIMUGD20HM303D.o RTIMULSM9DS0.o RTIMULSM9DS1.o RTIMUMPU9150.o RTIMUMPU9250.o RTIMUBMX055.o RTIMUBNO055.o RTIMUNull.o RTPressure.o RTPressureBMP180.o RTPressureLPS25H.o RTPressureMS5611.o RTPressureMS5637.o RTHumidity.o RTHumidityHTS221.o RTHumidityHTU21D.o RTIMUHMC5883LADXL345.o bcm2835.o ina2xx.o gpio.o power.o status.o sensor.o main.o $(LDFLAGS)
 
 main.o: $(SRC_DIR)/main.cpp
-	g++ -std=c++17 -Wno-psabi -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) $(INC_DIR) $(SRC_DIR)/main.cpp
-
-microservice.o: $(SRC_DIR)/microservice.cpp
-	g++ -std=c++17 -Wno-psabi -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) $(INC_DIR) $(SRC_DIR)/microservice.cpp
-
-camera.o: $(SRC_DIR)/camera.cpp
-	g++ -std=c++17 -Wno-psabi -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) $(INC_DIR) $(SRC_DIR)/camera.cpp
+	g++ -std=c++17 -Wno-psabi -g -c -pthread $(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(LOCAL_INCLUDE) $(INC_DIR) $(SRC_DIR)/main.cpp
 
 power.o: $(SRC_DIR)/power.cpp
-	g++ -std=c++17 -Wno-psabi -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) $(INC_DIR) $(SRC_DIR)/power.cpp
+	g++ -std=c++17 -Wno-psabi -g -c -pthread $(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(LOCAL_INCLUDE) $(INC_DIR) $(SRC_DIR)/power.cpp
 
 gpio.o: $(SRC_DIR)/gpio.cpp
-	g++ -std=c++17 -Wno-psabi -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) $(INC_DIR) $(SRC_DIR)/gpio.cpp
+	g++ -std=c++17 -Wno-psabi -g -c -pthread $(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(LOCAL_INCLUDE) $(INC_DIR) $(SRC_DIR)/gpio.cpp
 
 status.o: $(SRC_DIR)/status.cpp
-	g++ -std=c++17 -Wno-psabi -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) $(INC_DIR) $(SRC_DIR)/status.cpp
+	g++ -std=c++17 -Wno-psabi -g -c -pthread $(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(LOCAL_INCLUDE) $(INC_DIR) $(SRC_DIR)/status.cpp
 
 sensor.o: $(SRC_DIR)/sensor.cpp
-	g++ -std=c++17 -Wno-psabi -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) $(INC_DIR) $(SRC_DIR)/sensor.cpp
+	g++ -std=c++17 -Wno-psabi -g -c -pthread $(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(LOCAL_INCLUDE) $(INC_DIR) $(SRC_DIR)/sensor.cpp
 
 ina2xx.o: $(SRC_DIR)/ina2xx.c
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) $(INC_DIR) $(SRC_DIR)/ina2xx.c
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(LOCAL_INCLUDE) $(INC_DIR) $(SRC_DIR)/ina2xx.c
 
 bcm2835.o: $(SRC_DIR)/bcm2835.c
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) $(INC_DIR) $(SRC_DIR)/bcm2835.c
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) -I$(MAVLINK_DIR) -I$(LOCAL_INCLUDE) $(INC_DIR) $(SRC_DIR)/bcm2835.c
 
+RTFusion.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/RTFusion.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/RTFusion.cpp
 
+RTFusionRTQF.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/RTFusionRTQF.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/RTFusionRTQF.cpp
 
-RTFusion.o: $(PWD)/lib/RTIMULib2/RTIMULib/RTFusion.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/RTFusion.cpp
+RTMath.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/RTMath.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/RTMath.cpp
 
-RTFusionRTQF.o: $(PWD)/lib/RTIMULib2/RTIMULib/RTFusionRTQF.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/RTFusionRTQF.cpp
+RTFusionKalman4.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/RTFusionKalman4.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/RTFusionKalman4.cpp
 
-RTMath.o: $(PWD)/lib/RTIMULib2/RTIMULib/RTMath.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/RTMath.cpp
+RTIMUAccelCal.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/RTIMUAccelCal.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/RTIMUAccelCal.cpp
 
-RTFusionKalman4.o: $(PWD)/lib/RTIMULib2/RTIMULib/RTFusionKalman4.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/RTFusionKalman4.cpp
+RTIMUHal.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/RTIMUHal.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/RTIMUHal.cpp
 
-RTIMUAccelCal.o: $(PWD)/lib/RTIMULib2/RTIMULib/RTIMUAccelCal.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/RTIMUAccelCal.cpp
+RTIMUMagCal.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/RTIMUMagCal.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/RTIMUMagCal.cpp
 
-RTIMUHal.o: $(PWD)/lib/RTIMULib2/RTIMULib/RTIMUHal.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/RTIMUHal.cpp
+RTIMUSettings.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/RTIMUSettings.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/RTIMUSettings.cpp
 
-RTIMUMagCal.o: $(PWD)/lib/RTIMULib2/RTIMULib/RTIMUMagCal.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/RTIMUMagCal.cpp
+RTIMU.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMU.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMU.cpp
 
-RTIMUSettings.o: $(PWD)/lib/RTIMULib2/RTIMULib/RTIMUSettings.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/RTIMUSettings.cpp
+RTIMUGD20M303DLHC.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20M303DLHC.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20M303DLHC.cpp
 
-RTIMU.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMU.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMU.cpp
+RTIMUGD20HM303DLHC.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20HM303DLHC.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20HM303DLHC.cpp
 
-RTIMUGD20M303DLHC.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20M303DLHC.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20M303DLHC.cpp
+RTIMUGD20HM303D.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20HM303D.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20HM303D.cpp
 
-RTIMUGD20HM303DLHC.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20HM303DLHC.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20HM303DLHC.cpp
+RTIMULSM9DS0.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMULSM9DS0.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMULSM9DS0.cpp
 
-RTIMUGD20HM303D.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20HM303D.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUGD20HM303D.cpp
+RTIMULSM9DS1.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMULSM9DS1.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMULSM9DS1.cpp
 
-RTIMULSM9DS0.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMULSM9DS0.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMULSM9DS0.cpp
+RTIMUMPU9150.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUMPU9150.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUMPU9150.cpp
 
-RTIMULSM9DS1.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMULSM9DS1.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMULSM9DS1.cpp
+RTIMUMPU9250.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUMPU9250.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUMPU9250.cpp
 
-RTIMUMPU9150.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUMPU9150.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUMPU9150.cpp
+RTIMUBMX055.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUBMX055.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUBMX055.cpp
 
-RTIMUMPU9250.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUMPU9250.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUMPU9250.cpp
+RTIMUBNO055.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUBNO055.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUBNO055.cpp
 
-RTIMUBMX055.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUBMX055.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUBMX055.cpp
+RTIMUNull.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUNull.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUNull.cpp
 
-RTIMUBNO055.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUBNO055.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUBNO055.cpp
+RTPressure.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressure.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressure.cpp
 
-RTIMUNull.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUNull.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUNull.cpp
+RTPressureBMP180.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureBMP180.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureBMP180.cpp
 
-RTPressure.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressure.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressure.cpp
+RTPressureLPS25H.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureLPS25H.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureLPS25H.cpp
 
-RTPressureBMP180.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureBMP180.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureBMP180.cpp
+RTPressureMS5611.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureMS5611.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureMS5611.cpp
 
-RTPressureLPS25H.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureLPS25H.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureLPS25H.cpp
+RTPressureMS5637.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureMS5637.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureMS5637.cpp
 
-RTPressureMS5611.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureMS5611.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureMS5611.cpp
+RTHumidity.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidity.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidity.cpp
 
-RTPressureMS5637.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureMS5637.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTPressureMS5637.cpp
+RTHumidityHTS221.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidityHTS221.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidityHTS221.cpp
 
-RTHumidity.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidity.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidity.cpp
+RTHumidityHTU21D.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidityHTU21D.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidityHTU21D.cpp
 
-RTHumidityHTS221.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidityHTS221.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidityHTS221.cpp
-
-RTHumidityHTU21D.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidityHTU21D.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTHumidityHTU21D.cpp
-
-RTIMUHMC5883LADXL345.o: $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUHMC5883LADXL345.cpp
-	gcc -g -c -pthread -I$(SYSTEM_INCLUDE) $(INC_DIR) $(PWD)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUHMC5883LADXL345.cpp
-
+RTIMUHMC5883LADXL345.o: $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUHMC5883LADXL345.cpp
+	gcc -g -c -pthread $(SYSTEM_INCLUDE) $(INC_DIR) $(CURDIR)/lib/RTIMULib2/RTIMULib/IMUDrivers/RTIMUHMC5883LADXL345.cpp
 
 clean:
 	rm -f *.o openhd_microservice
@@ -148,13 +138,11 @@ install: openhd_microservice
 enable: install
 	systemctl enable openhd_microservice@power
 	systemctl start openhd_microservice@power
-
+	
 	systemctl enable openhd_microservice@gpio
 	systemctl start openhd_microservice@gpio
-
-	systemctl enable openhd_microservice@camera
-	systemctl start openhd_microservice@camera
 
 .PHONY: uninstall
 uninstall:
 	rm -f $(PREFIX)/bin/openhd_microservice
+

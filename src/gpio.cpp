@@ -30,7 +30,6 @@ constexpr uint8_t SERVICE_COMPID = MAV_COMP_ID_USER2;
 #define GPIO26 26
 #define GPIO32 32
 
-
 GPIOMicroservice::GPIOMicroservice(boost::asio::io_service &io_service): Microservice(io_service) {
     set_compid(SERVICE_COMPID);
 }
@@ -151,7 +150,8 @@ void GPIOMicroservice::process_mavlink_message(mavlink_message_t msg) {
                                                  this->m_compid,  // and from this component
                                                  &ack,
                                                  OPENHD_CMD_SET_GPIOS, // the command we're ack'ing
-                                                 MAV_CMD_ACK_OK,
+                                                 //MAV_CMD_ACK_OK,
+						 MAV_RESULT_ACCEPTED,
                                                  0,
                                                  0,
                                                  msg.sysid, // send ack to the senders system ID...
@@ -180,7 +180,7 @@ void GPIOMicroservice::process_mavlink_message(mavlink_message_t msg) {
                                                  this->m_compid,  // and from this component
                                                  &ack,
                                                  OPENHD_CMD_GET_GPIOS, // the command we're ack'ing
-                                                 MAV_CMD_ACK_OK,
+                                                 MAV_RESULT_ACCEPTED,
                                                  0,
                                                  0,
                                                  msg.sysid, // send ack to the senders system ID...

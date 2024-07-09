@@ -198,8 +198,8 @@ void StatusMicroservice::process_mavlink_message(mavlink_message_t msg) {
                                                  this->m_compid,  // and from this component
                                                  &ack,
                                                  OPENHD_CMD_GET_STATUS_MESSAGES, // the command we're ack'ing
-                                                 MAV_CMD_ACK_OK,
-                                                 0,
+                                                 MAV_RESULT_ACCEPTED,
+						 0,
                                                  0,
                                                  msg.sysid, // send ack to the senders system ID...
                                                  msg.compid); // ... and the senders component ID
@@ -244,7 +244,7 @@ void StatusMicroservice::process_mavlink_message(mavlink_message_t msg) {
                                                  this->m_compid,  // and from this component
                                                  &ack,
                                                  OPENHD_CMD_GET_VERSION, // the command we're ack'ing
-                                                 MAV_CMD_ACK_OK,
+                                                 MAV_RESULT_ACCEPTED,
                                                  0,
                                                  0,
                                                  msg.sysid, // send ack to the senders system ID...
